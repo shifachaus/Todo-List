@@ -1,18 +1,26 @@
 import render from "./render.js";
 import store, { addTodo, deleteTodo, toggleTodo } from "./store.js";
 
+const form = document.querySelector("#form");
+const inputTitle = document.querySelector(".todo-title-input");
+const todos = document.querySelector(".todos");
+
+// Add custom event to trigger the 'render' function
 window.addEventListener("todoschange", () => {
   render();
 });
 
-// Initial render
-render();
+// Retrieving data from local storage
+const storeFromLocalStorage = JSON.parse(localStorage.getItem("store"));
 
-// form
+if (storeFromLocalStorage?.todos.length > 0) {
+  store.todos = storeFromLocalStorage.todos;
+} else {
+  localStorage.setItem("store", JSON.stringify(store));
+  render();
+}
 
-const form = document.querySelector("#form");
-const inputTitle = document.querySelector(".todo-title-input");
-
+// Adding the new todo to the store
 form.addEventListener("submit", (e) => {
   e.preventDefault();
 
@@ -27,8 +35,7 @@ form.addEventListener("submit", (e) => {
   addTodo(newTodo);
 });
 
-const todos = document.querySelector(".todos");
-
+//Delete todo
 todos.addEventListener("click", (e) => {
   const target = e.target;
 
@@ -37,6 +44,7 @@ todos.addEventListener("click", (e) => {
   }
 });
 
+//handle checkbox changes
 todos.addEventListener("change", (e) => {
   const target = e.target;
 
